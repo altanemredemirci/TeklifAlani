@@ -1,0 +1,277 @@
+﻿@model CreateApplicationUserDTO
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link href="~/css/register.css" rel="stylesheet" />
+
+<div class="container">
+    <div class="card">
+        <div class="card-body register-card-body">
+            <div class="form-wrapper" style="max-height: 80vh; overflow-y: auto; overflow-x:hidden;">
+                <form asp-controller="Account" asp-action="Register" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title text-center"> Şirket ve Kişisel Bilgiler </h3>
+                            </div>
+                            <div class="card-body">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12 ">
+                                        <div class="card-body">
+                                            <div class="form-group d-flex align-items-center">
+                                                <label asp-for="Logo">Şirket Logosu</label>
+                                                <input type="file" id="logoInput" name="file" class="form-control-file mx-2" accept="image/*" onchange="previewLogo(event)" />
+                                                <img id="logoPreview" src="" alt="Logo Preview" style="display: none;" width="100" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="CompanyName"></label>
+                                                <input asp-for="CompanyName" class="form-control" placeholder="Firma ünvanı" />
+                                                <span asp-validation-for="CompanyName" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="TaxNumber"></label>
+                                                <input asp-for="TaxNumber" class="form-control" placeholder="Min 9 max 11 haneli vergi numaranız" />
+                                                <span asp-validation-for="TaxNumber" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="TC"></label>
+                                                <input asp-for="TC" class="form-control" placeholder="11 haneli T.C. kimlik numaranız" />
+                                                <span asp-validation-for="TC" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="City"></label>
+                                                <select asp-for="City" id="City" class="form-control">
+                                                    <option value="">İl Seçiniz</option>
+                                                    @foreach (var city in ViewData["cities"] as List<City>)
+                                                    {
+                                                        <option value="@city.Id">@city.Name</option>
+                                                    }
+                                                </select>
+                                                <span asp-validation-for="City" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="DistrictId"></label>
+                                                <select asp-for="DistrictId" id="District" class="form-control">
+                                                    <option value="">İlçe Seçiniz</option>
+                                                </select>
+                                                <span asp-validation-for="DistrictId" class="text-danger"></span>
+                                            </div>
+
+
+                                            <div class="form-group">
+                                                <label asp-for="Address"></label>
+                                                <textarea asp-for="Address" class="form-control" placeholder="Adresiniz"></textarea>
+                                                <span asp-validation-for="Address" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label asp-for="Name"></label>
+                                                <input asp-for="Name" class="form-control" placeholder="Adınız" />
+                                                <span asp-validation-for="Name" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="Surname"></label>
+                                                <input asp-for="Surname" class="form-control" placeholder="Soyadınız" />
+                                                <span asp-validation-for="Surname" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="Email"></label>
+                                                <input asp-for="Email" class="form-control" placeholder="Email adresiniz" />
+                                                <span asp-validation-for="Email" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="ShipmentEmail"></label>
+                                                <input asp-for="ShipmentEmail" class="form-control" placeholder="Onaylanan teklifin sevkiyat bilgisi için mail adresi" />
+                                                <span asp-validation-for="ShipmentEmail" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="PhoneNumber"></label>
+                                                <input asp-for="PhoneNumber" class="form-control" placeholder="Başında 0 olacak şekilde 11 haneli telefon numaranız" />
+                                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="Password"></label>
+                                                <input asp-for="Password" class="form-control" placeholder="Şifreniz" />
+                                                <small class="form-text text-muted">Şifreniz en az 6 karakter uzunluğunda, büyük harf, küçük harf ve rakam içermelidir.</small>
+                                                <span asp-validation-for="Password" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="RePassword"></label>
+                                                <input asp-for="RePassword" class="form-control" placeholder="Tekrar Şifreniz" />
+                                                <span asp-validation-for="RePassword" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                    <!-- Tedarikçi Formları -->
+                    <div class="row">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title text-center">Tedarikçi Bilgileri</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="supplier-forms" class="row">
+                                    @for (int i = 0; i < (Model.Suppliers?.Count ?? 0); i++)
+                                    {
+                                        var index = i;
+                                        <div class="col-md-6 col-sm-12 supplier-form">
+                                            <div class="card-body">
+                                                @await Component.InvokeAsync("_SupplierBrandViewComponentPartial")
+                                                <div class="form-group">
+                                                    <label>Şirket Adı</label>
+                                                    <input type="text" class="form-control" name="Suppliers[@index].CompanyName" value="@Model.Suppliers[index].CompanyName" placeholder="Firma ünvanı" />
+                                                    <span asp-validation-for="Suppliers[@index].CompanyName" class="text-danger"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>İletişim Kişisi</label>
+                                                    <input type="text" class="form-control" name="Suppliers[@index].ContactName" value="@Model.Suppliers[index].ContactName" placeholder="" />
+                                                    <span asp-validation-for="Suppliers[@index].ContactName" class="text-danger"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Email</label>
+                                                    <input type="email" class="form-control" name="Suppliers[@index].Email" value="@Model.Suppliers[index].Email" placeholder="Email adresi" />
+                                                    <span asp-validation-for="Suppliers[@index].Email" class="text-danger"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Telefon</label>
+                                                    <input type="text" class="form-control" name="Suppliers[@index].Phone" value="@Model.Suppliers[index].Phone" placeholder="Telefon numarası" />
+                                                    <span asp-validation-for="Suppliers[@index].Phone" class="text-danger"></span>
+                                                </div>
+                                                <button type="button" class="btn btn-danger" onclick="removeCurrentSupplier(this)">Tedarikçi Sil</button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <!-- "Tedarikçi Ekle" Butonu -->
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <button type="button" class="btn btn-success col-6" onclick="addSupplier()">Tedarikçi Ekle</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Template ve JavaScript Kodları -->
+                    <template id="supplier-template">
+                        <div class="col-md-6 col-sm-12 supplier-form">
+                            <div class="card-body">
+                                @await Component.InvokeAsync("_SupplierBrandViewComponentPartial")
+                                <div class="form-group">
+                                    <label>Şirket Adı</label>
+                                    <input type="text" class="form-control" name="Suppliers[Index].CompanyName" placeholder="Firma ünvanı" />
+                                </div>
+                                <div class="form-group">
+                                    <label>İletişim Kişisi</label>
+                                    <input type="text" class="form-control" name="Suppliers[Index].ContactName" placeholder="İletişim kişi" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" name="Suppliers[Index].Email" placeholder="Email adresi" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Telefon</label>
+                                    <input type="text" class="form-control" name="Suppliers[Index].Phone" placeholder="Telefon numarası" />
+                                </div>
+                                <button type="button" class="btn btn-danger" onclick="removeCurrentSupplier(this)">Tedarikçi Sil</button>
+                            </div>
+                        </div>
+                    </template>
+
+                    <div class="row mt-2">
+                        <div class="col-12 offset-4">
+                            <button type="submit" class="btn btn-primary col-4">Kayıt Ol</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    @* @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // İl seçildiğinde ilçeleri getir
+            $('#City').change(function () {
+                var cityId = $(this).val();
+
+                if (cityId) {
+                    $.ajax({
+                        url: 'https://teklifalani.com/api/Values/GetDistricts', // API endpoint
+                        type: 'GET',
+                        data: { id: cityId },
+                        success: function (response) {
+                            $('#District').empty(); // İlçeleri temizle
+                            $('#District').append('<option value="">İlçe Seçiniz</option>'); // Varsayılan seçenek
+                            $.each(response, function (index, district) {
+                                $('#District').append('<option value="' + district.id + '">' + district.name + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#District').empty();
+                    $('#District').append('<option value="">İlçe Seçiniz</option>');
+                }
+            });
+        });
+
+
+
+        function previewLogo(event) {
+            const logoPreview = document.getElementById('logoPreview');
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    logoPreview.src = e.target.result;
+                    logoPreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                logoPreview.style.display = 'none';
+                logoPreview.src = '';
+            }
+        }
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+   <script>
+        var supplierIndex = @(@Model.Suppliers?.Count ?? 0)
+
+            function addSupplier() {
+                var template = document.getElementById("supplier-template").innerHTML;
+                var newFormHtml = template.replace(/Index/g, supplierIndex);
+                supplierIndex++;
+
+                var div = document.createElement('div');
+                div.innerHTML = newFormHtml;
+                document.getElementById("supplier-forms").appendChild(div.firstElementChild);
+            }
+
+        function removeCurrentSupplier(button) {
+            var supplierForm = button.closest('.supplier-form');
+            if (supplierForm) {
+                supplierForm.remove();
+            }
+        }
+
+   </script>
+}
+

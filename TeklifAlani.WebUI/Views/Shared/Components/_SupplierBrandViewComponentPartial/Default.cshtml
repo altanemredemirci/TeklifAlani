@@ -1,0 +1,13 @@
+﻿@model List<Brand>
+
+<div class="form-group">
+    <label>Markalar</label>
+    <select name="Suppliers[Index].BrandId" id="SelectedBrands" class="form-control">
+        <option value="">Marka Seçiniz</option>
+
+        @foreach (var brand in Model)
+        {
+            <option value="@brand.Id">@brand.Name</option>
+        }
+    </select>
+</div>

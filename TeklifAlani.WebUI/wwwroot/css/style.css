@@ -1,0 +1,136 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+#dropdown {
+    width: 100%;
+    max-width: 100%; /* Ekrana göre genişliği ayarla */
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    max-height: 50vh; /* Dropdown'un maksimum yüksekliğini ayarla */
+    overflow-y: auto; /* İçerik fazla olduğunda kaydırma çubuğu oluştur */
+}
+
+.warning {
+    color: red;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+
+.icon {
+    cursor: pointer;
+    font-size: 16px;
+    color: green;
+}
+
+.trash-icon {
+    cursor: pointer;
+    font-size: 16px;
+    color: red;
+}
+
+#wishlist .wishlist-item {
+    padding: 8px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    margin: 5px 0;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.input-small {
+    width: 80px; /* Input genişliğini daralt */
+    padding: 5px; /* Input alanının içinde boşluk */
+}
+
+/* Girilen değeri sağa yaslamak için */
+.text-right {
+    text-align: right; /* Sağdan hizalama */
+}
+
+td{
+    text-align:center;
+}
+
+
+/* Responsive ayarlamalar */
+@media (max-width: 1024px) and (min-width:768px) {
+    h1{
+        font-size:24px;
+    }
+    tr{
+        font-size:12px;
+    }
+    td {
+        font-size: 0.8em;
+    }
+
+        td .form-control {
+            font-size: 0.8em;
+        }
+    .table > :not(caption) > * > *{
+        padding: .3rem .3rem;
+    }
+
+    .btn {
+        font-size: 0.8em; /* Küçültülmüş font boyutu */
+        padding: 6px 12px; /* Küçültülmüş iç boşluk */
+    }
+
+    .tooltip-text {
+        position: relative;
+        cursor: pointer;
+    }
+
+        .tooltip-text:hover::after,
+        .tooltip-text:active::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: 100%; /* Hücrenin altına yerleştirir */
+            left: 0;
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+}
+
+.navbar-brand img {
+  max-height: 50px;
+  height: auto;
+  width: auto;
+  margin:auto;
+}
+.elevation-3 {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .19), 0 6px 6px rgba(0, 0, 0, .23) !important;
+}
+
+.img-circle {
+    border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+    td {
+        font-size: 10px;
+    }
+
+        td .form-control {
+            font-size: 10px;
+        }
+}
+
+@media (max-width: 576px) {
+    td {
+        font-size: 9px;
+    }
+
+        td .form-control {
+            font-size: 9px;
+        }
+}

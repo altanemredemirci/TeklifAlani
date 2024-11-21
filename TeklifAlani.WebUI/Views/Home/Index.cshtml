@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Anasayfa";
+}
+<link href="~/css/style.css" rel="stylesheet" />
+<script src="~/admin/plugins/toastr/toastr.min.js"></script>
+<link rel="stylesheet" href="~/admin/plugins/toastr/toastr.min.css">
+<h1 class="text-center">Elektrik - Elektronik Ürünler</h1>
+
+
+<!-- Dropdown menüsü içinde tablo yapısı -->
+<div id="dropdown" style="display:none;">
+    <table id="productTable" class="table">
+        <thead>
+            <tr class="text-center">
+                <th>Marka</th>
+                <th>Ürün Kodu</th>
+                <th>Açıklama</th>
+                <th>Liste Fiyatı</th>
+                <th>Birim</th>
+                <th>İskonto</th>
+                <th>Teslim Süresi</th>
+                <th>Toplam</th>
+                <th>Ekle</th>
+                <th>Sor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dinamik olarak eklenecek satırlar buraya gelecek -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Wishlist alanı -->
+<div id="wishlist" style="display:none;">
+    <h1 id="wishlistHead" class="text-center mt-4">Teklif Listesi</h1>
+    <table id="wishlistItems" class="table table-striped">
+        <thead id="wishlistHead">
+            <tr class="text-center">
+                <th>Marka</th>
+                <th>Ürün Kodu</th>
+                <th>Açıklama</th>
+                <th>Fiyat</th>
+                <th>Birim</th>
+                <th>İskonto</th>
+                <th>Teslim Süresi</th>
+                <th>Toplam Fiyat</th>
+                <th>Ürün Linki</th>
+                <th>Sil</th>
+            </tr>
+        </thead>
+        <tbody></tbody> <!-- İstek listesine ürünler burada eklenecek -->
+    </table>   
+</div>
+

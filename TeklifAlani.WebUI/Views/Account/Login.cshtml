@@ -1,0 +1,69 @@
+﻿@model LoginApplicationUserDTO
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="login-box">
+    <!-- /.login-logo -->
+    <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+            <a href="/" class="h1"><b>Teklif</b> Alanı</a>
+        </div>
+        <div class="card-body">
+            <p class="login-box-msg">Giriş yaparak <b style="color:blue">TEKLİFLERİNİZİ</b> hızlıca hazırlayın.</p>
+
+            <form asp-action="Login" asp-controller="Account" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (TempData["message"] != null)
+                {
+                    <div class="alert alert-warning">
+                        @TempData["message"]
+                    </div> 
+                }
+                <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+                <div class="input-group mb-3">
+                    <input asp-for="PhoneNumber" class="form-control" value="@Model.PhoneNumber" placeholder="Telefon Numaranız...">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-phone"></span>
+                        </div>
+                    </div>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="input-group mb-3">
+                    <input asp-for="Password" class="form-control" placeholder="Şifreniz...">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="icheck-primary">
+                            <a asp-action="ForgotPassword">Şifremi Unuttum</a>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Giriş Yap</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>          
+            <!-- /.social-auth-links -->
+
+            <p class="mb-1">
+                
+            </p>
+            <p class="mb-0">
+                <a asp-action="Register" class="btn btn-success btn-sm">Kayıt Ol</a>
+            </p>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</div>
+

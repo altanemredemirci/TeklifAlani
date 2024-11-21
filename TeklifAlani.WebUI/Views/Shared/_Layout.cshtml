@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ElektroSiparis.WebUI</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/ElektroSiparis.WebUI.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <style>
+        .dropdown-menu {
+            z-index: 1050; /* Bootstrap'in üst düzey menü katmanı */
+            position: absolute; /* Menü pozisyonunu bağımsız hale getirir */
+        }
+
+        .navbar {
+            overflow: visible; /* Navbar'ın taşmayı kesmesini engeller */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <!-- Reklam Amaçlı Şirket Logoları -->
+            <div class="container-fluid bg-light py-2 mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <img src="~/img/company.jpg" width="18%" alt="Şirket 1">
+                    <img src="~/img/alves_kablo.png" width="18%" alt="Şirket 2">
+                    <img src="~/img/alves_kablo_1.png" width="18%" alt="Şirket 3">
+                    <img src="~/img/alves_kablo.webp" width="18%" alt="Şirket 4">
+                    <img src="~/img/reklam1.jpg" width="18%" alt="Şirket 5">
+                </div>
+            </div>
+        }
+
+        <!-- Asıl Navbar -->
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="col-5">
+                    <div class="row align-items-center">
+                        <div class="col-4 d-flex align-items-center">
+                            <a class="navbar-brand offset-3" asp-area="" asp-controller="Home" asp-action="Index">
+                                <img src="~/img/logo.jpg" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+
+                            </a>
+                            <span style="font-size:1.2rem">URS Techo</span>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" class="form-control" name="CompanyName" placeholder="Teklif Verilen Firma Ünvanı" />
+                        </div>
+                        <div class="col-4">
+                            <input type="text" class="form-control" name="ContactTitle" placeholder="Teklif Verilen Kişi" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5 ms-4">
+                    <div class="input-group">
+                        <input type="text" id="searchInput" class="search-box form-control" placeholder="Aranacak Ürün Bilgisi veya Kodu Giriniz...">
+                        <button id="searchButton" class="btn btn-outline-primary">
+                            <i class="fas fa-search"></i> Ara
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="row align-items-center">
+                        <div class="col-2 ms-4">
+                            <div class="dropdown">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius:50%">
+                                    <i class="fas fa-user"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Profil</a></li>
+                                    <li><a class="dropdown-item" href="/Account/Logout">Çıkış</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <button class="btn btn-danger" style="font-weight:500" onclick="addEmptyRow()">
+                                <i class="fas fa-plus"></i> Teklif Satırı Ekle
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            }
+            else
+            {
+                <div class="col-1">
+                    <div class="row align-items-center">
+                        <div class="col-4 d-flex align-items-center">
+                            <a class="navbar-brand offset-3" asp-area="" asp-controller="Home" asp-action="Index">
+                                <img src="~/img/logo.jpg" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                            </a>
+                            <span style="font-size:1.2rem">URS Techo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-10 mx-4 d-flex align-items-center">
+                    <input type="text" id="searchInput" class="search-box form-control" placeholder="Aranacak Ürün Bilgisi veya Kodu Giriniz...">
+                    <button id="searchButton" class="btn btn-block btn-outline-primary ml-2">
+                        Ara
+                    </button>
+                </div>
+
+                <div class="col-7">
+                    <a href="/Account/Login" class="btn btn-primary" style="font-weight:500">
+                        <i class="fa-solid fa-right-to-bracket"></i> Giriş
+                    </a>
+                </div>
+            }
+        </nav>
+
+
+
+
+    </header>
+    <main role="main" class="pb-3">
+        <!-- Uyarı mesajı göstermek için -->
+        <div id="warning" class="warning text-center"></div>
+        @RenderBody()
+    </main>
+
+
+
+    <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="~/js/anasayfa.js" defer></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @* <script src="~/js/site.js" asp-append-version="true"></script> *@
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
