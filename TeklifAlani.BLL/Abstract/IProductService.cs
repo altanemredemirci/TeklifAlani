@@ -7,7 +7,8 @@ using TeklifAlani.Core.Models;
 
 namespace TeklifAlani.BLL.Abstract
 {
-    internal interface IProductService:IRepositoryService<Product>
+    public interface IProductService:IRepositoryService<Product>
     {
+        Task<List<Product>> SearchProducts(string query);
     }
 }

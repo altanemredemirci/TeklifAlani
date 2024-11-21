@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Text.Json;
+using TeklifAlani.BLL.Abstract;
 using TeklifAlani.BLL.Services;
 using TeklifAlani.WebUI.Models;
 
@@ -8,14 +9,11 @@ namespace TeklifAlani.WebUI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _apiBaseUrl;
-        private UserService _userService;
+        private readonly IProductService _productService;
 
-        public HomeController(IConfiguration configuration, UserService userService)
+        public HomeController(IProductService productService)
         {
-            _httpClient = new HttpClient();
-            _userService = userService;
+            _productService = productService;
         }
 
         public IActionResult Index()
@@ -36,32 +34,21 @@ namespace TeklifAlani.WebUI.Controllers
                 return BadRequest("Arama deðeri boþ olamaz");
             }
 
-            // API'ye istek gönder
-            var apiUrl = $"{_apiBaseUrl}/Values/Search?query={query}";
-            var response = await _httpClient.GetStringAsync(apiUrl);
-
-            // JSON'u deserialize ederken PascalCase property adlarýný korumak için options kullanýyoruz
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true // Property adlarýný küçük/büyük harf duyarsýz hale getirir
-            };
-
             try
             {
-                var results = JsonSerializer.Deserialize<List<ProductModel>>(response, options);
+                var results = await _productService.SearchProducts(query);
 
-                var formattedResults = results.Select(x => new
+                var model = results.Select(x => new ProductModel()
                 {
-                    x.Brand,
-                    x.Description,
-                    x.Link,
-                    x.ListPrice,
-                    x.Currency,
-                    x.ProductCode,
-                    FormattedPrice = x.FormattedPrice
+                    Brand = x.Brand,
+                    Description = x.Description,
+                    Link = x.Link,
+                    ListPrice = x.ListPrice,
+                    Currency = x.Currency,
+                    ProductCode = x.ProductCode
                 });
-
-                return Json(formattedResults);
+             
+                return Json(model);
             }
             catch (Exception ex)
             {

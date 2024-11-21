@@ -5,7 +5,7 @@ namespace TeklifAlani.Core.Interfaces
 {
     public interface IRepository<T> where T : class
     {
-        IEnumerable<T> GetAll(Expression<Func<T, bool>> filter);
+        List<T> GetAll(Expression<Func<T, bool>> filter);
         T GetOne(Expression<Func<T, bool>> filter);
         T GetById(int id);
 

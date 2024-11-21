@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TeklifAlani.BLL.Abstract;
+using TeklifAlani.BLL.Services;
 using TeklifAlani.Core.Identity;
+using TeklifAlani.DAL.Abstract;
+using TeklifAlani.DAL.Concrete;
 using TeklifAlani.DAL.Context;
 using TeklifAlani.WebUI.EmailServices;
 using TeklifAlani.WebUI.Models;
@@ -19,8 +23,13 @@ namespace TeklifAlani.WebUI
 
             builder.Services.AddScoped<IEmailSender, MailHelper>();
 
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IProductDal, EfCoreProductDal>();
+
+
             builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
-               options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectConnection")));
+               options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
               .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
