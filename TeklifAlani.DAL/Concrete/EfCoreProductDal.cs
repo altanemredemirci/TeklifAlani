@@ -12,16 +12,20 @@ namespace TeklifAlani.DAL.Concrete
 {
     public class EfCoreProductDal : EfCoreGenericRepositoryDal<Product, DataContext>, IProductDal
     {
+        private readonly DataContext _context;
+
+        public EfCoreProductDal(DataContext context) : base(context)
+        {
+            _context = context;
+        }
         public async Task<List<Product>> SearchProducts(string query)
         {
             if (string.IsNullOrWhiteSpace(query))
                 return new List<Product>();
 
-            using(var context = new DataContext())
-            {
                 query = $"%{query}%"; 
 
-                var results = await context.Products
+                var results = await _context.Products
                     .Include(p => p.Brand) 
                     .Where(p =>
                         EF.Functions.Like(p.Brand.Name, query) || 
@@ -30,7 +34,7 @@ namespace TeklifAlani.DAL.Concrete
                     .ToListAsync();
 
                 return results;
-            }
+            
            
         }
     }

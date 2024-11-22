@@ -7,9 +7,9 @@ namespace TeklifAlani.DAL.Context
 {
     public class DataContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DataContext(DbContextOptions<DataContext> options):base(options)
         {
-            optionsBuilder.UseSqlServer("Server=.;Database=Egim;User Id=sa;Password=1;TrustServerCertificate=True;");
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

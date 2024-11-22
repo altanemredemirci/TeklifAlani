@@ -9,6 +9,7 @@ using TeklifAlani.DAL.Concrete;
 using TeklifAlani.DAL.Context;
 using TeklifAlani.WebUI.EmailServices;
 using TeklifAlani.WebUI.Models;
+using TeklifAlani.WEBUI.Context;
 
 namespace TeklifAlani.WebUI
 {
@@ -27,9 +28,16 @@ namespace TeklifAlani.WebUI
             builder.Services.AddScoped<IProductDal, EfCoreProductDal>();
 
 
-            builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
-               options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            // appsettings.json dosyasýndan baðlantý dizesini alýyoruz
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+            // ApplicationIdentityDbContext için yapýlandýrma
+            builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+                options.UseSqlServer(connectionString));
+
+            // DataContext için yapýlandýrma
+            builder.Services.AddDbContext<DataContext>(options =>
+                options.UseSqlServer(connectionString));
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
               .AddEntityFrameworkStores<ApplicationIdentityDbContext>()

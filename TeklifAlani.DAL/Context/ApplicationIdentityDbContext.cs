@@ -3,12 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using TeklifAlani.Core.Identity;
 using TeklifAlani.Core.Models;
 
-namespace TeklifAlani.DAL.Context
+namespace TeklifAlani.WEBUI.Context
 {
     public class ApplicationIdentityDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationIdentityDbContext(DbContextOptions<ApplicationIdentityDbContext> options)
-        : base(options)
+        public ApplicationIdentityDbContext(DbContextOptions<ApplicationIdentityDbContext> options):base(options)
         {
         }
 
