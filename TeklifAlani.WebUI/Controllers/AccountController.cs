@@ -12,6 +12,9 @@ using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Processing;
+using TeklifAlani.BLL.Abstract;
+using AutoMapper;
+using TeklifAlani.BLL.Services;
 
 namespace TeklifAlani.WebUI.Controllers
 {
@@ -21,27 +24,25 @@ namespace TeklifAlani.WebUI.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
-        private readonly string _apiBaseUrl;
+        private readonly ICityService _cityService;
+        private readonly IBrandService _brandService;
+        private readonly IMapper _mapper;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, IConfiguration configuration)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, ICityService cityService, IMapper mapper,IBrandService brandService)
         {
             _httpClient = new HttpClient();
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
-            _apiBaseUrl = configuration["ApiSettings:ApiUrl"];
+            _cityService = cityService;
+            _brandService = brandService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Register()
         {
-
-            var apiUrl = $"{_apiBaseUrl}/Values/GetCities";
-            var response = await _httpClient.GetStringAsync(apiUrl);
-
-            // Gelen JSON'u deserialize ederek döndürüyoruz
-            var results = JsonSerializer.Deserialize<List<City>>(response);
-
-            ViewData["cities"] = results;
+            ViewData["cities"] = _cityService.GetAll(); 
+            ViewData["brands"] = _brandService.GetAll();
 
             return View(new CreateApplicationUserDTO());
         }
@@ -56,41 +57,61 @@ namespace TeklifAlani.WebUI.Controllers
             }
             else
             {
+                model = await UniqueControl(model);
+
                 ModelState.Remove("Logo");
                 ModelState.Remove("Username");
 
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
-                    // Logoyu işleyin ve kullanıcıyı API'ye gönderin
-                    var postResponse = await RegisterUserAndUploadLogoAsync(model, file);
-
-                    if (postResponse.IsSuccessStatusCode)
-                    {
-                        var user = await _userManager.FindByEmailAsync(model.Email);
-                        if (user != null)
-                        {
-                            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                            var confirmationLink = Url.Action("ConfirmEmail", "Account",
-                                new { userId = user.Id, token = token }, Request.Scheme);
-
-                            var body = $"Lütfen e-posta adresinizi doğrulamak için bu bağlantıya tıklayın: <a href='{confirmationLink}'>E-postayı Doğrula</a>";
-
-                            // Mail gönderimi
-                            await _emailSender.SendEmailAsync(user.Email, "E-posta Doğrulama", body);
-                        }
-
-                        TempData["message"] = "Lütfen email adresinize gönderilen link ile hesabınızı onaylayınız";
-                        return RedirectToAction("Login");
-                    }
-                    else
-                    {
-                        var errorContent = await postResponse.Content.ReadAsStringAsync();
-                        AddErrorsToModelState(errorContent);
-                    }
+                    ViewData["cities"] = _cityService.GetAll();
+                    ViewData["brands"] = _brandService.GetAll();
+                    return View(model);
                 }
+
+                model = await UploadLogoAsync(model, file);
+
+                if (!ModelState.IsValid)
+                {
+                    ViewData["cities"] = _cityService.GetAll();
+                    ViewData["brands"] = _brandService.GetAll();
+                    return View(model);
+                }
+
+                var appUser = _mapper.Map<ApplicationUser>(model);
+                appUser.UserName = model.PhoneNumber;
+                // Kullanıcıyı oluştur ve parola belirleyin
+                var result = await _userManager.CreateAsync(appUser, model.Password);
+
+                if (result.Succeeded)
+                {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    if (user != null)
+                    {
+                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmationLink = Url.Action("ConfirmEmail", "Account",
+                            new { userId = user.Id, token = token }, Request.Scheme);
+
+                        var body = $"Lütfen e-posta adresinizi doğrulamak için bu bağlantıya tıklayın: <a href='{confirmationLink}'>E-postayı Doğrula</a>";
+
+                        // Mail gönderimi
+                        await _emailSender.SendEmailAsync(user.Email, "E-posta Doğrulama", body);
+                    }
+
+                    TempData["message"] = "Lütfen email adresinize gönderilen link ile hesabınızı onaylayınız";
+                    return RedirectToAction("Login");
+                }
+
+                // Hataları döndürün
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
             }
 
-            await LoadCitiesAsync();
+            ViewData["brands"] = _brandService.GetAll();
+            ViewData["cities"] = _cityService.GetAll();
             return View(model);
         }
 
@@ -169,7 +190,6 @@ namespace TeklifAlani.WebUI.Controllers
             }
         }
 
-        #region Düzelt
         public IActionResult ForgotPassword()
         {
             return View();
@@ -245,46 +265,62 @@ namespace TeklifAlani.WebUI.Controllers
         {
             return View();
         }
-        #endregion
 
-        private async Task LoadCitiesAsync()
+        private async Task<CreateApplicationUserDTO> UploadLogoAsync(CreateApplicationUserDTO model, IFormFile file)
         {
-            var apiUrl = $"{_apiBaseUrl}/Values/GetCities";
-            var response = await _httpClient.GetStringAsync(apiUrl);
-            var results = JsonSerializer.Deserialize<List<City>>(response);
-            ViewData["cities"] = results;
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    using (Image image = Image.Load(stream.ToArray()))
+                    {
+                        image.Mutate(x => x.Resize(128, 128));
+                        var fileName = $"{model.PhoneNumber}.webp";
+                        model.Logo = fileName;
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", fileName);
+                        await image.SaveAsync(filePath, new WebpEncoder());
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "Logo Kaydedilemedi!");
+            }
+            return model;
         }
 
-        private async Task<HttpResponseMessage> RegisterUserAndUploadLogoAsync(CreateApplicationUserDTO model, IFormFile file)
+        private async Task<CreateApplicationUserDTO> UniqueControl(CreateApplicationUserDTO model)
         {
-            using (var stream = new MemoryStream())
+            var userWithSamePhone = await _userManager.Users.AnyAsync(u => u.PhoneNumber == model.PhoneNumber);
+            var userWithSameTC = await _userManager.Users.AnyAsync(u => u.TC == model.TC);
+            var userWithSameTaxNumber = await _userManager.Users.AnyAsync(u => u.TaxNumber == model.TaxNumber);
+            var userWithSameEmail = await _userManager.Users.AnyAsync(u => u.Email == model.Email);
+
+            if (userWithSamePhone || userWithSameTC || userWithSameTaxNumber || userWithSameEmail)
             {
-                await file.CopyToAsync(stream);
-                using (Image image = Image.Load(stream.ToArray()))
+                if (userWithSamePhone)
                 {
-                    image.Mutate(x => x.Resize(128, 128));
-                    var fileName = $"{model.PhoneNumber}.webp";
-                    model.Logo = fileName;
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", fileName);
-                    await image.SaveAsync(filePath, new WebpEncoder());
+                    ModelState.AddModelError("PhoneNumber", "Bu telefon numarası zaten kayıtlı.");
+                }
+
+                if (userWithSameTC)
+                {
+                    ModelState.AddModelError("TC", "Bu TC kimlik numarası zaten kayıtlı.");
+                }
+
+                if (userWithSameTaxNumber)
+                {
+                    ModelState.AddModelError("TaxNumber", "Bu vergi numarası zaten kayıtlı.");
+                }
+
+                if (userWithSameEmail)
+                {
+                    ModelState.AddModelError("TaxNumber", "Bu Email adresi zaten kayıtlı.");
                 }
             }
 
-            model.UserName = model.Email;
-            var jsonContent = JsonSerializer.Serialize(model);
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            var applicationUrl = $"{_apiBaseUrl}/User/RegisterUser";
-            return await _httpClient.PostAsync(applicationUrl, content);
-        }
-
-        private void AddErrorsToModelState(string errorContent)
-        {
-            var errors = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(errorContent);
-            foreach (var error in errors.SelectMany(e => e.Value))
-            {
-                ModelState.AddModelError("", error);
-            }
+            return model;
         }
 
         [Authorize]

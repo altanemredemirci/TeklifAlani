@@ -10,7 +10,7 @@ function checkSessionAndRedirect(actionCallback) {
                 actionCallback();
             } else if (response.status === 401) {
                 // Oturum kapalı, login sayfasına yönlendir
-                alert("Lütfen oturum açınız!");
+                alert("Bir işlem yapmak için lütfen oturum açınız!");
                 window.location.href = '/Account/Login';
             }
         })
@@ -55,49 +55,49 @@ function searchProducts(query) {
 
     // Fetch veya diğer işlemlerle arama yapabilirsiniz
     fetch(`/Home/Search?query=${query}`)
-        .then(response => response.json())       
+        .then(response => response.json())
         .then(data => {
             let tableBody = document.querySelector('#productTable tbody');
             tableBody.innerHTML = ''; // Önceki sonuçları temizle
 
             // Eğer veri geldiyse tabloyu göster
-            if (data.length > 0) {
+            if (data.$values.length > 0) {
                 document.getElementById('dropdown').style.display = 'block';
             } else {
                 document.getElementById('dropdown').style.display = 'none';
             }
-
+            console.log(data)
             // Gelen verilerden her birini tabloya satır olarak ekle
-            data.forEach(item => {
-                let row = document.createElement('tr');
-                let shortenedDescription = item.description.length > 30 ? item.description.substring(0, 30) + '...' : item.description;
-                row.innerHTML = `
+            if (data.$values && data.$values.length > 0) {
+                data.$values.forEach(item => {
+                    let row = document.createElement('tr');
+                    let shortenedDescription = item.description.length > 30 ? item.description.substring(0, 30) + '...' : item.description;
+
+                    row.innerHTML = `
                     <td>${item.brand.name}</td>
                     <td>${item.productCode}</td>
                     <td class="tooltip-text" data-tooltip="${item.description}" title="${item.description}">${shortenedDescription}</td>
-                    <td>${item.formattedPrice} </td>
-                  <td>
-            <div style="display: flex; align-items: center;">
-                <input type="number" class="form-control input-small text-right quantity" name="item.quantity" min="1" max="999999" value="0" maxlength="6" />
-                <select class="form-control unit-select" name="unit" style="margin-left: 5px; appearance: auto;">
-                    <option value="adet">Adet</option>
-                    <option value="m">Metre</option>
-                    <option value="kg">Kilogram</option>
-                </select>
-            </div>
-        </td>
-
-                    <td><input type="number" class="form-control input-small text-right discount" name="discount" min="0" value="0"/></td>                    
-                 <td><input type="date" class="form-control text-right delivery-time" name="deliveryTime" min="" /></td>
-                      
+                    <td>${item.listPrice} ${item.currency}</td>
                     <td>
-                         <div style="display: flex; align-items: center;">
-                         <input type="text" class="form-control text-center total-price" placeholder="Toplam" readonly/>
-                             <button class="btn btn-success calculate-button" style="margin-left: 5px;">Hesapla</button>
-                         </div>
-                     </td>
-                    <td class="text-center">    
-                        <button type="submit" class="btn btn-primary col fileinput-button dz-clickable add-to-wishlist text-center">
+                        <div style="display: flex; align-items: center;">
+                            <input type="number" class="form-control input-small text-right quantity" name="item.quantity" min="1" max="999999" value="0" maxlength="6" />
+                            <select class="form-control unit-select" name="unit" style="margin-left: 5px;">
+                                <option value="adet">Adet</option>
+                                <option value="m">Metre</option>
+                                <option value="kg">Kilogram</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td><input type="number" class="form-control input-small text-right discount" name="discount" min="0" value="0" /></td>
+                    <td><input type="date" class="form-control text-right delivery-time" name="deliveryTime" /></td>
+                    <td>
+                        <div style="display: flex; align-items: center;">
+                            <input type="text" class="form-control text-center total-price" placeholder="Toplam" readonly />
+                            <button class="btn btn-success calculate-button" style="margin-left: 5px;">Hesapla</button>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <button type="submit" class="btn btn-primary add-to-wishlist">
                             <i class="fa-solid fa-plus fa-beat"></i>
                         </button>
                     </td>
@@ -108,64 +108,60 @@ function searchProducts(query) {
                     </td>
                 `;
 
-                tableBody.appendChild(row); // Satırı tabloya ekle
+                    tableBody.appendChild(row);
 
-                row.querySelector('.quantity').addEventListener('input', function () {
-                    if (this.value.length > 6) {
-                        this.value = this.value.slice(0, 6);
-                    }
-                });
-
-                let deliveryTimeInput = row.querySelector('.delivery-time');
-                const today = new Date().toISOString().split("T")[0];  // Bugünün tarihini "YYYY-MM-DD" formatında alır
-                deliveryTimeInput.setAttribute("min", today);  // min değeri olarak bugünü ayarlar
-
-
-                row.querySelector('.calculate-button').addEventListener('click', function () {
-                    checkSessionAndRedirect(() => {
-                        totalPrice(row, item.listPrice, item.currency);
-                        console.log('Hesaplama işlemi yapılıyor...');
-                    });
-                });
-
-
-                // Ekle butonuna tıklanınca ürünü istek listesine ekle
-                row.querySelector('.add-to-wishlist').addEventListener('click', function () {
-                    checkSessionAndRedirect(() => {
-                        item.quantity = row.querySelector('.quantity').value;
-                        item.discount = row.querySelector('.discount').value;
-                        item.deliveryTime = row.querySelector('.delivery-time').value;
-                        item.total = row.querySelector('.total-price').value;
-
-                        let total = row.querySelector('.quantity').value * item.listPrice * (1 - item.discount);
-
-                        if (item.total == "" && row.querySelector('.quantity').value > 0 && item.deliveryTime != "") {
-                            totalPrice(row, item.listPrice, item.currency)
+                    // Event Listener'lar
+                    row.querySelector('.quantity').addEventListener('input', function () {
+                        if (this.value.length > 6) {
+                            this.value = this.value.slice(0, 6);
                         }
-                        item.total = row.querySelector('.total-price').value;
+                    });
 
-                        addToWishlist(item);
-                        console.log('İstek listesine ürün ekleniyor...');
+                    const deliveryTimeInput = row.querySelector('.delivery-time');
+                    const today = new Date().toISOString().split("T")[0];
+                    deliveryTimeInput.setAttribute("min", today);
+
+                    row.querySelector('.calculate-button').addEventListener('click', function () {
+                        checkSessionAndRedirect(() => {
+                            totalPrice(row, item.listPrice, item.currency);
+                            console.log('Hesaplama işlemi yapılıyor...');
+                        });
+                    });
+
+                    row.querySelector('.add-to-wishlist').addEventListener('click', function () {
+                        checkSessionAndRedirect(() => {
+                            item.quantity = row.querySelector('.quantity').value;
+                            item.discount = row.querySelector('.discount').value;
+                            item.deliveryTime = row.querySelector('.delivery-time').value;
+                            item.total = row.querySelector('.total-price').value;
+
+                            let total = row.querySelector('.quantity').value * item.listPrice * (1 - item.discount / 100);
+
+                            if (item.total === "" && row.querySelector('.quantity').value > 0 && item.deliveryTime !== "") {
+                                totalPrice(row, item.listPrice, item.currency);
+                            }
+                            item.total = row.querySelector('.total-price').value;
+
+                            addToWishlist(item);
+                            console.log('İstek listesine ürün ekleniyor...');
+                        });
+                    });
+
+                    row.querySelector('.email-share').addEventListener('click', function () {
+                        checkSessionAndRedirect(() => {
+                            sendEmail(item);
+                            console.log('Email gönderme işlemi...');
+                        });
                     });
                 });
-
-                // Email paylaş butonuna tıklanınca mail gönder
-                row.querySelector('.email-share').addEventListener('click', function () {
-                    checkSessionAndRedirect(() => {
-                        sendEmail(item);
-                        console.log('Email gönderme işlemi...');
-                    });
-                });
-
-
-
-            });
-
+            } else {
+                console.log('Hiçbir sonuç bulunamadı.');
+            }
         })
-        .catch(error => console.error('Error:', error));
-};
-
-
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
 
 
 

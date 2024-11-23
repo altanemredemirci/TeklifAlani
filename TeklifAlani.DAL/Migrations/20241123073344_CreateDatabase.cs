@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TeklifAlani.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class CreateDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,7 +26,7 @@ namespace TeklifAlani.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Brand",
+                name: "Brands",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -35,11 +35,11 @@ namespace TeklifAlani.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Brand", x => x.Id);
+                    table.PrimaryKey("PK_Brands", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "City",
+                name: "Cities",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -48,7 +48,7 @@ namespace TeklifAlani.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_City", x => x.Id);
+                    table.PrimaryKey("PK_Cities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,7 +73,7 @@ namespace TeklifAlani.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Product",
+                name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -87,17 +87,17 @@ namespace TeklifAlani.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Product", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Product_Brand_BrandId",
+                        name: "FK_Products_Brands_BrandId",
                         column: x => x.BrandId,
-                        principalTable: "Brand",
+                        principalTable: "Brands",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "District",
+                name: "Districts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -107,28 +107,28 @@ namespace TeklifAlani.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_District", x => x.Id);
+                    table.PrimaryKey("PK_Districts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_District_City_CityId",
+                        name: "FK_Districts_Cities_CityId",
                         column: x => x.CityId,
-                        principalTable: "City",
+                        principalTable: "Cities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
+                name: "ApplicationUser",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Logo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShipmentEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TaxNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TC = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Logo = table.Column<string>(type: "varchar(50)", nullable: false),
+                    CompanyName = table.Column<string>(type: "varchar(50)", nullable: false),
+                    Name = table.Column<string>(type: "varchar(30)", nullable: false),
+                    Surname = table.Column<string>(type: "varchar(30)", nullable: false),
+                    ShipmentEmail = table.Column<string>(type: "varchar(250)", nullable: false),
+                    Address = table.Column<string>(type: "varchar(250)", nullable: false),
+                    TaxNumber = table.Column<string>(type: "varchar(15)", nullable: false),
+                    TC = table.Column<string>(type: "varchar(11)", nullable: false),
                     DistrictId = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -138,7 +138,7 @@ namespace TeklifAlani.DAL.Migrations
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -147,11 +147,11 @@ namespace TeklifAlani.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.PrimaryKey("PK_ApplicationUser", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_District_DistrictId",
+                        name: "FK_ApplicationUser_Districts_DistrictId",
                         column: x => x.DistrictId,
-                        principalTable: "District",
+                        principalTable: "Districts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -170,9 +170,9 @@ namespace TeklifAlani.DAL.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        name: "FK_AspNetUserClaims_ApplicationUser_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "ApplicationUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -190,9 +190,9 @@ namespace TeklifAlani.DAL.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
-                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        name: "FK_AspNetUserLogins_ApplicationUser_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "ApplicationUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -208,15 +208,15 @@ namespace TeklifAlani.DAL.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
+                        name: "FK_AspNetUserRoles_ApplicationUser_UserId",
+                        column: x => x.UserId,
+                        principalTable: "ApplicationUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -234,15 +234,15 @@ namespace TeklifAlani.DAL.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
                     table.ForeignKey(
-                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        name: "FK_AspNetUserTokens_ApplicationUser_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "ApplicationUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Supplier",
+                name: "Suppliers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -256,19 +256,55 @@ namespace TeklifAlani.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Supplier", x => x.Id);
+                    table.PrimaryKey("PK_Suppliers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Supplier_AspNetUsers_ApplicationUserId",
+                        name: "FK_Suppliers_ApplicationUser_ApplicationUserId",
                         column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "ApplicationUser",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Supplier_Brand_BrandId",
+                        name: "FK_Suppliers_Brands_BrandId",
                         column: x => x.BrandId,
-                        principalTable: "Brand",
+                        principalTable: "Brands",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "ApplicationUser",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUser_DistrictId",
+                table: "ApplicationUser",
+                column: "DistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUser_PhoneNumber",
+                table: "ApplicationUser",
+                column: "PhoneNumber",
+                unique: true,
+                filter: "[PhoneNumber] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUser_TaxNumber",
+                table: "ApplicationUser",
+                column: "TaxNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUser_TC",
+                table: "ApplicationUser",
+                column: "TC",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "ApplicationUser",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -298,40 +334,23 @@ namespace TeklifAlani.DAL.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_DistrictId",
-                table: "AspNetUsers",
-                column: "DistrictId");
-
-            migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "AspNetUsers",
-                column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_District_CityId",
-                table: "District",
+                name: "IX_Districts_CityId",
+                table: "Districts",
                 column: "CityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Product_BrandId",
-                table: "Product",
+                name: "IX_Products_BrandId",
+                table: "Products",
                 column: "BrandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Supplier_ApplicationUserId",
-                table: "Supplier",
+                name: "IX_Suppliers_ApplicationUserId",
+                table: "Suppliers",
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Supplier_BrandId",
-                table: "Supplier",
+                name: "IX_Suppliers_BrandId",
+                table: "Suppliers",
                 column: "BrandId");
         }
 
@@ -354,25 +373,25 @@ namespace TeklifAlani.DAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Product");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Supplier");
+                name: "Suppliers");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "ApplicationUser");
 
             migrationBuilder.DropTable(
-                name: "Brand");
+                name: "Brands");
 
             migrationBuilder.DropTable(
-                name: "District");
+                name: "Districts");
 
             migrationBuilder.DropTable(
-                name: "City");
+                name: "Cities");
         }
     }
 }

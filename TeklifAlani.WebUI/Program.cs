@@ -11,6 +11,8 @@ using TeklifAlani.WebUI.EmailServices;
 using TeklifAlani.WebUI.Models;
 using TeklifAlani.WEBUI.Context;
 
+using TeklifAlani.Core.Mapping;
+
 namespace TeklifAlani.WebUI
 {
     public class Program
@@ -22,26 +24,32 @@ namespace TeklifAlani.WebUI
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
             builder.Services.AddScoped<IEmailSender, MailHelper>();
 
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IProductDal, EfCoreProductDal>();
 
+            builder.Services.AddScoped<ICityService, CityService>();
+            builder.Services.AddScoped<ICityDal, EfCoreCityDal>();
 
-            // appsettings.json dosyasýndan baðlantý dizesini alýyoruz
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddScoped<IBrandService, BrandService>();
+            builder.Services.AddScoped<IBrandDal, EfCoreBrandDal>();
 
-            // ApplicationIdentityDbContext için yapýlandýrma
+
             builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
-                options.UseSqlServer(connectionString));
-
-            // DataContext için yapýlandýrma
-            builder.Services.AddDbContext<DataContext>(options =>
-                options.UseSqlServer(connectionString));
+     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
               .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
               .AddDefaultTokenProviders();
+
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+            });
+
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

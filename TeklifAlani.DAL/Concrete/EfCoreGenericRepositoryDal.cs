@@ -38,7 +38,7 @@ namespace TeklifAlani.DAL.Concrete
 
         public List<T> GetAll(Expression<Func<T, bool>> filter)
         {
-            throw new NotImplementedException();
+            return _context.Set<T>().ToList();
         }
 
         public virtual T GetById(int id)

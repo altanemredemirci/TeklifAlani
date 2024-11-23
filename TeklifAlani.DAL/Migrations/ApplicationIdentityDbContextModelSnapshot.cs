@@ -165,11 +165,13 @@ namespace TeklifAlani.DAL.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(250)")
+                        .HasAnnotation("Display", "Adres");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(50)")
+                        .HasAnnotation("Display", "Firma Ünvanı");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -193,11 +195,13 @@ namespace TeklifAlani.DAL.Migrations
 
                     b.Property<string>("Logo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(50)")
+                        .HasAnnotation("Display", "Firma Logosu");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(30)")
+                        .HasAnnotation("Display", "İsim");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -211,7 +215,7 @@ namespace TeklifAlani.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
@@ -221,19 +225,23 @@ namespace TeklifAlani.DAL.Migrations
 
                     b.Property<string>("ShipmentEmail")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(250)")
+                        .HasAnnotation("Display", "Sevkiyat Email");
 
                     b.Property<string>("Surname")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(30)")
+                        .HasAnnotation("Display", "Soyisim");
 
                     b.Property<string>("TC")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(11)")
+                        .HasAnnotation("Display", "TC Kimlik No");
 
                     b.Property<string>("TaxNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(15)")
+                        .HasAnnotation("Display", "Vergi No");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -254,55 +262,58 @@ namespace TeklifAlani.DAL.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique()
+                        .HasFilter("[PhoneNumber] IS NOT NULL");
+
+                    b.HasIndex("TC")
+                        .IsUnique();
+
+                    b.HasIndex("TaxNumber")
+                        .IsUnique();
+
+                    b.ToTable("ApplicationUser", (string)null);
                 });
 
             modelBuilder.Entity("TeklifAlani.Core.Models.Brand", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "id");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brand");
-
-                    b.HasAnnotation("Relational:JsonPropertyName", "brand");
+                    b.ToTable("Brands");
                 });
 
             modelBuilder.Entity("TeklifAlani.Core.Models.City", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "id");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("City");
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("TeklifAlani.Core.Models.District", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "id");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
@@ -312,14 +323,13 @@ namespace TeklifAlani.DAL.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
-                        .HasAnnotation("Relational:JsonPropertyName", "name");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("District");
+                    b.ToTable("Districts");
                 });
 
             modelBuilder.Entity("TeklifAlani.Core.Models.Product", b =>
@@ -356,7 +366,7 @@ namespace TeklifAlani.DAL.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("TeklifAlani.Core.Models.Supplier", b =>
@@ -393,7 +403,7 @@ namespace TeklifAlani.DAL.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.ToTable("Supplier");
+                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -482,7 +492,7 @@ namespace TeklifAlani.DAL.Migrations
 
             modelBuilder.Entity("TeklifAlani.Core.Models.Supplier", b =>
                 {
-                    b.HasOne("TeklifAlani.Core.Identity.ApplicationUser", "ApplicationUser")
+                    b.HasOne("TeklifAlani.Core.Identity.ApplicationUser", null)
                         .WithMany("Suppliers")
                         .HasForeignKey("ApplicationUserId");
 
@@ -491,8 +501,6 @@ namespace TeklifAlani.DAL.Migrations
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ApplicationUser");
 
                     b.Navigation("Brand");
                 });

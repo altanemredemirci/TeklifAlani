@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using TeklifAlani.BLL.Abstract;
 using TeklifAlani.BLL.Services;
+using TeklifAlani.Core.Models;
 using TeklifAlani.WebUI.Models;
 
 namespace TeklifAlani.WebUI.Controllers
@@ -24,11 +25,6 @@ namespace TeklifAlani.WebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(string query)
         {
-            //if (!User.Identity.IsAuthenticated)
-            //{
-            //    return Unauthorized(new { message = "Bu iþlemi yapmak için oturum açmanýz gerekiyor." });
-            //}
-
             if (string.IsNullOrEmpty(query))
             {
                 return BadRequest("Arama deðeri boþ olamaz");
@@ -40,13 +36,13 @@ namespace TeklifAlani.WebUI.Controllers
 
                 var model = results.Select(x => new ProductModel()
                 {
-                    Brand = x.Brand,
+                    Brand = new Brand() { Id = x.Brand.Id, Name = x.Brand.Name },
                     Description = x.Description,
                     Link = x.Link,
                     ListPrice = x.ListPrice,
                     Currency = x.Currency,
                     ProductCode = x.ProductCode
-                });
+                }).ToList();
              
                 return Json(model);
             }

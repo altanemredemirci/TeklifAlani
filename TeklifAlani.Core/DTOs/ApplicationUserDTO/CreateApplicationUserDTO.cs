@@ -85,9 +85,6 @@ namespace TeklifAlani.Core.DTOs.ApplicationUserDTO
         [Display(Name = "Kullanıcı Adı")]
         public string? UserName { get; set; }
 
-
         public List<CreateSupplierDTO>? Suppliers { get; set; }
-
-
     }
 }

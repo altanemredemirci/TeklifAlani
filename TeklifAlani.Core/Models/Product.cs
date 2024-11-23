@@ -18,8 +18,7 @@ namespace TeklifAlani.Core.Models
         public string Link { get; set; }
 
         public int BrandId { get; set; }
-
-        [JsonPropertyName("brand")]
+       
         public Brand Brand { get; set; }
     }
 

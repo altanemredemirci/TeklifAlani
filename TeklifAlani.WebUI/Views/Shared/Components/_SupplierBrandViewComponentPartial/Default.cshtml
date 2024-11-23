@@ -1,13 +1,24 @@
 ﻿@model List<Brand>
 
+@{
+    var index = ViewData["Index"] as int? ?? 0;
+    var selectedBrandId = ViewData["SelectedBrandId"] as int?;
+}
+
 <div class="form-group">
     <label>Markalar</label>
-    <select name="Suppliers[Index].BrandId" id="SelectedBrands" class="form-control">
+    <select name="Suppliers[@index].BrandId" class="form-control">
         <option value="">Marka Seçiniz</option>
-
         @foreach (var brand in Model)
         {
-            <option value="@brand.Id">@brand.Name</option>
+            if (brand.Id == selectedBrandId)
+            {
+                <option value="@brand.Id" selected>@brand.Name</option>
+            }
+            else
+            {
+                <option value="@brand.Id">@brand.Name</option>
+            }
         }
     </select>
 </div>

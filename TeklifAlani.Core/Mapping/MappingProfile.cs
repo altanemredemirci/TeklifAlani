@@ -5,7 +5,7 @@ using TeklifAlani.Core.Identity;
 using TeklifAlani.Core.Models;
 
 
-namespace TeklifAlani.WebUI.Mapping
+namespace TeklifAlani.Core.Mapping
 {
     public class MappingProfile : Profile
     {

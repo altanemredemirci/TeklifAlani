@@ -23,8 +23,6 @@ namespace TeklifAlani.Core.Models
 
         // ApplicationUser ile ilişki
         public string? ApplicationUserId { get; set; }
-        
-        public ApplicationUser? ApplicationUser { get; set; }
 
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

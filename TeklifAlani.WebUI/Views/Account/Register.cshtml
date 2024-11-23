@@ -3,6 +3,9 @@
     ViewData["Title"] = "Register";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
+<script>
+    var brands = @Html.Raw(Json.Serialize(ViewData["brands"]));
+</script>
 <link href="~/css/register.css" rel="stylesheet" />
 
 <div class="container">
@@ -42,7 +45,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label asp-for="City"></label>
-                                                <select asp-for="City" id="City" class="form-control">
+                                                <select name="city" id="City" class="form-control">
                                                     <option value="">İl Seçiniz</option>
                                                     @foreach (var city in ViewData["cities"] as List<City>)
                                                     {
@@ -127,7 +130,7 @@
                                         var index = i;
                                         <div class="col-md-6 col-sm-12 supplier-form">
                                             <div class="card-body">
-                                                @await Component.InvokeAsync("_SupplierBrandViewComponentPartial")
+                                                @await Component.InvokeAsync("_SupplierBrandViewComponentPartial", new { index = index, selectedBrandId = Model.Suppliers[index].BrandId })
                                                 <div class="form-group">
                                                     <label>Şirket Adı</label>
                                                     <input type="text" class="form-control" name="Suppliers[@index].CompanyName" value="@Model.Suppliers[index].CompanyName" placeholder="Firma ünvanı" />
@@ -152,6 +155,7 @@
                                             </div>
                                         </div>
                                     }
+
                                 </div>
                                 <!-- "Tedarikçi Ekle" Butonu -->
                                 <div class="row">
@@ -167,7 +171,16 @@
                     <template id="supplier-template">
                         <div class="col-md-6 col-sm-12 supplier-form">
                             <div class="card-body">
-                                @await Component.InvokeAsync("_SupplierBrandViewComponentPartial")
+                                <div class="form-group">
+                                    <label>Markalar</label>
+                                    <select name="Suppliers[Index].BrandId" class="form-control">
+                                        <option value="">Marka Seçiniz</option>
+                                        @foreach (var brand in ViewData["brands"] as List<Brand>)
+                                        {
+                                            <option value="@brand.Id">@brand.Name</option>
+                                        }
+                                    </select>
+                                </div>
                                 <div class="form-group">
                                     <label>Şirket Adı</label>
                                     <input type="text" class="form-control" name="Suppliers[Index].CompanyName" placeholder="Firma ünvanı" />
@@ -188,6 +201,7 @@
                             </div>
                         </div>
                     </template>
+
 
                     <div class="row mt-2">
                         <div class="col-12 offset-4">
@@ -211,20 +225,27 @@
 
                 if (cityId) {
                     $.ajax({
-                        url: 'https://teklifalani.com/api/Values/GetDistricts', // API endpoint
+                        url: '/City/DistrictByCity', // API endpoint
                         type: 'GET',
                         data: { id: cityId },
                         success: function (response) {
-                            $('#District').empty(); // İlçeleri temizle
+                            // İlçe select alanını temizle
+                            $('#District').empty();
                             $('#District').append('<option value="">İlçe Seçiniz</option>'); // Varsayılan seçenek
-                            $.each(response, function (index, district) {
-                                $('#District').append('<option value="' + district.id + '">' + district.name + '</option>');
-                            });
+
+                            // Gelen JSON'dan $values içinde döngü oluştur
+                            if (response.$values && response.$values.length > 0) {
+                                $.each(response.$values, function (index, district) {
+                                    $('#District').append('<option value="' + district.id + '">' + district.name + '</option>');
+                                });
+                            } else {
+                                console.log('Hiçbir ilçe bulunamadı.');
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Hata:', error);
                         }
                     });
-                } else {
-                    $('#District').empty();
-                    $('#District').append('<option value="">İlçe Seçiniz</option>');
                 }
             });
         });
@@ -253,17 +274,26 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
    <script>
-        var supplierIndex = @(@Model.Suppliers?.Count ?? 0)
+        var supplierIndex = @(Model.Suppliers != null ? Model.Suppliers.Count : 0);
 
-            function addSupplier() {
-                var template = document.getElementById("supplier-template").innerHTML;
-                var newFormHtml = template.replace(/Index/g, supplierIndex);
-                supplierIndex++;
 
-                var div = document.createElement('div');
-                div.innerHTML = newFormHtml;
-                document.getElementById("supplier-forms").appendChild(div.firstElementChild);
+        function addSupplier() {
+            var template = document.getElementById("supplier-template").innerHTML;
+            var newFormHtml = template.replace(/Index/g, supplierIndex);
+            supplierIndex++;
+
+            var div = document.createElement('div');
+            div.innerHTML = newFormHtml;
+            document.getElementById("supplier-forms").appendChild(div.firstElementChild);
+        }
+
+        function removeCurrentSupplier(button) {
+            var supplierForm = button.closest('.supplier-form');
+            if (supplierForm) {
+                supplierForm.remove();
             }
+        }
+
 
         function removeCurrentSupplier(button) {
             var supplierForm = button.closest('.supplier-form');

@@ -6,11 +6,9 @@ namespace TeklifAlani.Core.Models
 {
     public class District
     {
-        [JsonPropertyName("id")]
         public int Id { get; set; }
 
         [StringLength(150)]
-        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         public int CityId { get; set; }

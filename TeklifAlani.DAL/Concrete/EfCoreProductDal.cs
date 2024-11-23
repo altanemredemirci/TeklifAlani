@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 using TeklifAlani.Core.Models;
 using TeklifAlani.DAL.Abstract;
 using TeklifAlani.DAL.Context;
+using TeklifAlani.WEBUI.Context;
 
 namespace TeklifAlani.DAL.Concrete
 {
-    public class EfCoreProductDal : EfCoreGenericRepositoryDal<Product, DataContext>, IProductDal
+    public class EfCoreProductDal : EfCoreGenericRepositoryDal<Product, ApplicationIdentityDbContext>, IProductDal
     {
-        private readonly DataContext _context;
+        private readonly ApplicationIdentityDbContext _context;
 
-        public EfCoreProductDal(DataContext context) : base(context)
+        public EfCoreProductDal(ApplicationIdentityDbContext context) : base(context)
         {
             _context = context;
         }
