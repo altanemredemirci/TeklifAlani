@@ -21,7 +21,7 @@ namespace TeklifAlani.DAL.Context
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationIdentityDbContext>();
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var connectionString = configuration.GetConnectionString("ProjectConnection");
 
             optionsBuilder.UseSqlServer(connectionString);
 

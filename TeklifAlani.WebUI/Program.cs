@@ -39,7 +39,7 @@ namespace TeklifAlani.WebUI
 
 
             builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
-     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+     options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectConnection")));
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
               .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
