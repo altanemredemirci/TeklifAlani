@@ -3,31 +3,8 @@
     padding: 20px;
 }
 
-#loading-spinner {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-}
-
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 6px solid #f3f3f3;
-    border-top: 6px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+#searchInput{
+    font-size:1.5rem;
 }
 
 
@@ -70,11 +47,6 @@
     font-size: 12px;
 }
 
-.input-small {
-    width: 80px; /* Input genişliğini daralt */
-    padding: 5px; /* Input alanının içinde boşluk */
-}
-
 /* Girilen değeri sağa yaslamak için */
 .text-right {
     text-align: right; /* Sağdan hizalama */
@@ -82,6 +54,25 @@
 
 td{
     text-align:center;
+    vertical-align:middle;
+}
+
+    .offerCompany {
+        font-size: 1.5rem;
+    }
+
+table {
+    width: 100%; /* Tabloyu ekran genişliğine uydur */
+    table-layout: fixed; /* Sabit düzen */
+    word-wrap: break-word; /* Kelimeleri böl */
+    border-collapse: collapse;
+}
+
+#productTable th, #productTable td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 1rem;
 }
 
 
@@ -98,7 +89,7 @@ td{
     }
 
         td .form-control {
-            font-size: 0.8em;
+            font-size: 0.5rem;
         }
     .table > :not(caption) > * > *{
         padding: .3rem .3rem;
@@ -106,7 +97,7 @@ td{
 
     .btn {
         font-size: 0.8em; /* Küçültülmüş font boyutu */
-        padding: 6px 12px; /* Küçültülmüş iç boşluk */
+        padding: 6px 12px; /* Küçültülmüş iç boşluk */ 
     }
 
     .tooltip-text {
@@ -127,10 +118,29 @@ td{
             white-space: nowrap;
             z-index: 1000;
         }
+
+    #productTable th, #productTable td {
+        font-size: .5rem;
+        padding: 3px;
+    }
+
+    #wishlist th, #wishlist td {
+        font-size: .5rem;
+        padding: 3px;
+    }   
+
+
+    #searchInput {
+        font-size: .7rem;
+    }
+
+    .form-control {
+        font-size: .7rem;
+    }
 }
 
 .navbar-brand img {
-  max-height: 50px;
+  max-height: 100px;
   height: auto;
   width: auto;
   margin:auto;
@@ -140,25 +150,104 @@ td{
 }
 
 .img-circle {
-    border-radius: 50%;
+    border-radius: 30%;
 }
 
 @media (max-width: 768px) {
-    td {
-        font-size: 10px;
+
+    #searchInput {
+        font-size: .7rem;        
     }
 
-        td .form-control {
-            font-size: 10px;
-        }
+    .form-control {
+        font-size: .7rem;
+        margin-left:3px;
+    }
+
+    .sidebar, .extra-content {
+        display: none; /* Gereksiz içerikleri gizle */
+    }
+    .navbar-brand img {
+        max-height: 50px;
+        height: auto;
+        width: auto;
+        margin: auto;
+    }
+
+    #productTable th, #productTable td {
+        font-size: .5rem;
+        padding: 3px;
+    }
+
+    #wishlist th, #wishlist td {
+        font-size: .5rem;
+        padding: 3px;
+    }
+
+    #total th, #total td {
+        font-size: .5rem;
+        padding: 3px;
+    } 
+
+    td .form-control {
+        font-size: .5rem;
+    }
+    .unit-select{
+        font-size:.5rem;
+    }
+    .btn {
+        font-size: .6rem;
+        padding: 4px 8px;
+    }
+
+    .delivery-time{
+        font-size:.5rem;
+    }
+    .total-price{
+        font-size:.5rem;
+    }
+
 }
 
 @media (max-width: 576px) {
-    td {
-        font-size: 9px;
+    table td {
+        font-size: 0.7em;
     }
 
         td .form-control {
             font-size: 9px;
         }
+
+    #productTable {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+        #productTable th, #productTable td {
+            font-size: 10px;
+            padding: 4px;
+        }
+}
+@media (orientation: landscape) and (max-width: 1024px) {
+    body {
+        padding: 10px; /* Daha küçük padding */
+    }
+
+    h1 {
+        font-size: 20px; /* Daha küçük başlık boyutu */
+    }
+
+    td {
+        font-size: 0.7em;
+    }
+
+    .navbar-brand img {
+        max-height: 40px; /* Logo boyutunu küçült */
+    }
+
+    .btn {
+        font-size: 0.7em;
+        padding: 4px 8px;
+    }
 }

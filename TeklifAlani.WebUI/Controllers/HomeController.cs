@@ -53,5 +53,26 @@ namespace TeklifAlani.WebUI.Controllers
         }
 
 
+        [HttpPost]
+        public IActionResult Print([FromBody] List<ProductModel> model)
+        {
+            if (model == null || !model.Any())
+            {
+                return BadRequest("Gönderilen veri boþ.");
+            }
+
+            // Burada model üzerinden iþlemleri gerçekleþtirin.
+            // Örneðin, PDF dosyasý oluþturabilir ya da veritabanýna kaydedebilirsiniz.
+
+            // Örnek iþlem:
+            Debug.WriteLine($"Toplam Ürün Sayýsý: {model.Count}");
+            foreach (var item in model)
+            {
+                Debug.WriteLine($"Marka: {item.Brand.Name}, Ürün Kodu: {item.ProductCode}");
+            }
+
+            return Ok("Yazdýrma iþlemi baþarýlý.");
+        }
+
     }
 }

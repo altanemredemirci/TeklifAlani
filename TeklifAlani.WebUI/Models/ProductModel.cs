@@ -25,7 +25,7 @@ namespace TeklifAlani.WebUI.Models
 
         public double TotalPrice { get; set; }
 
-        public string FormattedPrice => ListPrice.ToString("N", new CultureInfo("tr-TR"))+Currency;
+        public string FormattedPrice => ListPrice.ToString()+Currency;
 
         public string FormattedTotalPrice => TotalPrice.ToString("N", new CultureInfo("tr-TR"))+Currency;
     }

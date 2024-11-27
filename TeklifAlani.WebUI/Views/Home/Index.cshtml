@@ -8,20 +8,19 @@
 
 
 <!-- Dropdown menüsü içinde tablo yapısı -->
-<div id="dropdown" style="display:none;">
+<div id="dropdown" style="display:none; overflow-x:auto">
     <table id="productTable" class="table">
         <thead>
             <tr class="text-center">
-                <th>Marka</th>
-                <th>Ürün Kodu</th>
-                <th>Açıklama</th>
-                <th>Liste Fiyatı</th>
-                <th>Birim</th>
-                <th>İskonto</th>
-                <th>Teslim Süresi</th>
-                <th>Toplam</th>
-                <th>Ekle</th>
-                <th>Sor</th>
+                <th style="width:7%">Marka</th>
+                <th style="width:7%">Ürün Kodu</th>
+                <th style="width:11%">Açıklama</th>
+                <th style="width:8%">Liste Fiyatı</th>
+                <th style="width:11%">Birim</th>
+                <th style="width:5.5%">İskonto</th>
+                <th style="width:8%">Teslim Süresi</th>
+                <th style="width:11%">Toplam</th>
+                <th style="width:6%">Ekle - Sor</th>
             </tr>
         </thead>
         <tbody>
@@ -36,22 +35,59 @@
 <!-- Wishlist alanı -->
 <div id="wishlist" style="display:none;">
     <h1 id="wishlistHead" class="text-center mt-4">Teklif Listesi</h1>
+    <form asp-action="Print" asp-controller="Home" method="post">
     <table id="wishlistItems" class="table table-striped">
         <thead id="wishlistHead">
             <tr class="text-center">
-                <th>Marka</th>
-                <th>Ürün Kodu</th>
-                <th>Açıklama</th>
-                <th>Fiyat</th>
-                <th>Birim</th>
-                <th>İskonto</th>
-                <th>Teslim Süresi</th>
-                <th>Toplam Fiyat</th>
-                <th>Ürün Linki</th>
-                <th>Sil</th>
+                <th style="width:7%">Marka</th>
+                <th style="width:7%">Ürün Kodu</th>
+                <th style="width:11%">Açıklama</th>
+                <th style="width:8%">Fiyat</th>
+                <th style="width:11%">Birim</th>
+                <th style="width:5.5%">İskonto</th>
+                <th style="width:8%">Teslim Süresi</th>
+                <th style="width:11%">Toplam Fiyat</th>
+                <th style="width:7%">Ürün Linki - Sil</th>
             </tr>
         </thead>
-        <tbody></tbody> <!-- İstek listesine ürünler burada eklenecek -->
-    </table>   
+      
+        <tbody></tbody> 
+        
+    </table>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-info">Yazdır</button>
+        </div>
+    </form>
+    <div class="card col-2 offset-10" id="total">     
+        <!-- /.card-header -->
+        <div class="card-body p-0">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width:50%">Para Birimi</th>
+                        <th class="text-center">Tutar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Lira</td>
+                        <td id="totalLira"></td>                       
+                    </tr>
+                    <tr>
+                        <td>Dolar</td>
+                        <td id="totalDolar"></td>
+                    </tr>
+                    <tr>
+                        <td>Euro</td>
+                        <td id="totalEuro"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+       
+       
+        <!-- /.card-body -->
+    </div>
+    
 </div>
 
